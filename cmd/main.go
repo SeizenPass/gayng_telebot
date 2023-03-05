@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
@@ -10,9 +11,21 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	test := flag.Bool("test", false, "Test mode")
+	testEnvFile := flag.String("testEnvFile", "test.env", ".env file with testing bindings")
+
+	flag.Parse()
+
+	if *test {
+		err := godotenv.Load(*testEnvFile)
+		if err != nil {
+			log.Fatalf("Error loading %s file\n", *testEnvFile)
+		}
+	} else {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
 
 	pref := tele.Settings{
